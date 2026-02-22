@@ -196,10 +196,10 @@ export default function Footer() {
                         gap: 16,
                         marginBottom: 28,
                     }}>
-                        <SocialButton href="https://instagram.com" label="Instagram">
+                        <SocialButton href="https://www.instagram.com/bl_jewels168/" label="Instagram">
                             <InstagramIcon />
                         </SocialButton>
-                        <SocialButton href="https://tiktok.com" label="TikTok">
+                        <SocialButton href="https://www.tiktok.com/@bl_jewels168?_r=1&_t=ZS-948MjY3z0ia" label="TikTok">
                             <TiktokIcon />
                         </SocialButton>
                         <SocialButton href="https://wa.me/212655777934" label="WhatsApp">
