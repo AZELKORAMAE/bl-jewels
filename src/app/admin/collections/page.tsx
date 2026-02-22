@@ -354,7 +354,7 @@ export default function AdminCollectionsPage() {
 
                     <button onClick={showForm ? handleCancel : () => setShowForm(true)}
                         style={{
-                            padding: '12px 24px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                            padding: '12px 24px', borderRadius: 10, cursor: 'pointer',
                             fontSize: 11, fontWeight: 700, letterSpacing: '0.20em',
                             fontFamily: "'Montserrat',sans-serif",
                             background: showForm ? 'transparent' : `linear-gradient(135deg,${GOLD_BRIGHT},${GOLD})`,

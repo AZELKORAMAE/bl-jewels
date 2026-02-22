@@ -102,9 +102,9 @@ export default function ProductPage() {
     };
 
     const perks = [
-        { icon: '✦', label: 'Livraison gratuite' },
-
         { icon: '✦', label: 'Certificat inclus' },
+
+        { icon: '✦', label: ' Livraison gratuite' },
         { icon: '✦', label: 'Emballage cadeau' },
     ];
 
