@@ -4,6 +4,87 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import RevenueChart from '@/components/admin/RevenueChart';
 
+/* ── Design tokens — LIGHT theme ─────────────────────────────────────── */
+const GOLD = '#B8902A';
+const GOLD_BRIGHT = '#D4A93A';
+const GOLD_LIGHT = 'rgba(184,144,42,0.08)';
+const GOLD_BORDER = 'rgba(184,144,42,0.22)';
+const PAGE_BG = '#FDFBF6';
+const CARD_BG = '#FFFFFF';
+const CARD_BG2 = '#FAF7F0';
+const TEXT_MAIN = '#1A1508';
+const TEXT_MUTED = 'rgba(26,21,8,0.42)';
+
+/* ── Card shell ───────────────────────────────────────────────────────── */
+function Card({
+    children, style = {}, hoverable = false,
+}: {
+    children: React.ReactNode;
+    style?: React.CSSProperties;
+    hoverable?: boolean;
+}) {
+    const [hov, setHov] = useState(false);
+    return (
+        <div
+            onMouseEnter={() => hoverable && setHov(true)}
+            onMouseLeave={() => hoverable && setHov(false)}
+            style={{
+                background: CARD_BG,
+                border: `1px solid ${hov ? GOLD_BORDER : 'rgba(184,144,42,0.14)'}`,
+                borderRadius: 16,
+                boxShadow: hov
+                    ? `0 8px 36px rgba(184,144,42,0.14), 0 1px 3px rgba(0,0,0,0.06), 0 1px 0 rgba(255,255,255,0.9) inset`
+                    : `0 4px 24px rgba(184,144,42,0.08), 0 1px 3px rgba(0,0,0,0.04), 0 1px 0 rgba(255,255,255,0.9) inset`,
+                transition: 'box-shadow 0.25s, border-color 0.25s',
+                ...style,
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
+/* ── Section title ────────────────────────────────────────────────────── */
+function SectionTitle({ children }: { children: string }) {
+    return (
+        <div style={{ marginBottom: 32, textAlign: 'center' }}>
+            <p style={{
+                letterSpacing: '0.32em', fontSize: 11, color: GOLD,
+                fontFamily: "'Montserrat',sans-serif", fontWeight: 600,
+                marginBottom: 14,
+            }}>
+                TABLEAU DE BORD
+            </p>
+            <h1 style={{
+                margin: 0,
+                fontSize: 'clamp(28px,4vw,44px)',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                color: TEXT_MAIN,
+                fontFamily: "'Cormorant Garamond','Playfair Display',Georgia,serif",
+            }}>
+                {children}
+            </h1>
+            <div style={{
+                width: 60, height: 1, margin: '20px auto 0',
+                background: `linear-gradient(90deg,transparent,${GOLD},transparent)`,
+            }} />
+        </div>
+    );
+}
+
+/* ── Skeleton ─────────────────────────────────────────────────────────── */
+function Skeleton() {
+    return (
+        <div style={{
+            height: 32, width: 64, borderRadius: 8,
+            background: 'linear-gradient(90deg, #f0ebe0 25%, #faf7f0 50%, #f0ebe0 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 1.4s infinite',
+        }} />
+    );
+}
+
 interface Stats {
     collectionsCount: number;
     productsCount: number;
@@ -20,156 +101,207 @@ export default function AdminPage() {
     const [timeframe, setTimeframe] = useState<'day' | 'month' | 'year'>('day');
 
     useEffect(() => {
-        async function fetchStats() {
-            try {
-                const res = await fetch('/api/stats');
-                const data = await res.json();
-                if (data.success) {
-                    setStats(data.data);
-                }
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchStats();
+        fetch('/api/stats')
+            .then(r => r.json())
+            .then(d => { if (d.success) setStats(d.data); })
+            .catch(console.error)
+            .finally(() => setLoading(false));
     }, []);
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('fr-MA', {
-            style: 'currency',
-            currency: 'MAD',
-        }).format(price);
-    };
-
-    const cards = [
-        {
-            href: '/admin/collections',
-            icon: '💎',
-            title: 'Collections',
-            desc: 'Gérer les collections de bijoux',
-            count: stats?.collectionsCount,
-            color: 'from-gold-light/50 to-gold-light/20',
-        },
-        {
-            href: '/admin/products',
-            icon: '💍',
-            title: 'Produits',
-            desc: 'Ajouter et gérer les produits',
-            count: stats?.productsCount,
-            color: 'from-cream to-white',
-        },
-        {
-            href: '/admin/orders',
-            icon: '📦',
-            title: 'Commandes',
-            desc: 'Consulter les commandes',
-            count: stats?.ordersCount,
-            color: 'from-green-50 to-white',
-        },
-    ];
+    const formatPrice = (p: number) =>
+        new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
 
     const getCurrentRevenueData = () => {
         if (!stats) return [];
-        switch (timeframe) {
-            case 'day': return stats.revenueByDay || [];
-            case 'month': return stats.revenueByMonth || [];
-            case 'year': return stats.revenueByYear || [];
-            default: return [];
-        }
+        return (timeframe === 'day' ? stats.revenueByDay
+            : timeframe === 'month' ? stats.revenueByMonth
+                : stats.revenueByYear) || [];
     };
 
+    const cards = [
+        { href: '/admin/collections', icon: '💎', title: 'Collections', desc: 'Gérer les collections de bijoux', count: stats?.collectionsCount },
+        { href: '/admin/products', icon: '💍', title: 'Produits', desc: 'Ajouter et gérer les produits', count: stats?.productsCount },
+        { href: '/admin/orders', icon: '📦', title: 'Commandes', desc: 'Consulter les commandes clients', count: stats?.ordersCount },
+    ];
+
     return (
-        <div className="section min-h-screen bg-gray-50/50">
-            <div className="container mx-auto px-4 max-w-6xl">
-                <div className="text-center mb-16">
-                    <span className="text-gold-primary text-xs font-semibold uppercase tracking-[0.2em] inline-block mb-2">
-                        Tableau de bord
-                    </span>
-                    <h1 className="text-4xl md:text-5xl font-heading text-deep-black">Administration</h1>
-                    <div className="divider mx-auto mt-6" />
-                </div>
+        <>
+            {/* Shimmer keyframe */}
+            <style>{`@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
 
-                {/* Revenue Section */}
-                {stats && (
-                    <div className="mb-16 fade-in px-4 md:px-0">
-                        <div className="flex flex-col md:flex-row items-stretch justify-between mb-8 gap-6">
-                            {/* Revenue Card - Light & Green */}
-                            <div className="bg-white rounded-2xl p-8 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 min-w-[300px] flex flex-col justify-center relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-20 h-20 bg-success/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110" />
-                                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Revenu Total</p>
-                                <p className="text-4xl md:text-5xl font-heading font-medium text-emerald-600">
-                                    {formatPrice(stats.totalRevenue)}
-                                </p>
-                            </div>
+            <div style={{ minHeight: '100vh', background: PAGE_BG, paddingTop: 80, paddingBottom: 80 }}>
+                <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 24px' }}>
 
-                            {/* Timeframe Selector */}
-                            <div className="flex bg-white rounded-xl p-1.5 shadow-sm border border-gray-100 self-center">
-                                {(['day', 'month', 'year'] as const).map((t) => (
-                                    <button
-                                        key={t}
-                                        onClick={() => setTimeframe(t)}
-                                        className={`px-6 py-2.5 text-sm font-medium rounded-lg transition-all ${timeframe === t
-                                            ? 'bg-deep-black text-white shadow-md'
-                                            : 'text-gray-500 hover:text-black hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        {t === 'day' ? 'Jour' : t === 'month' ? 'Mois' : 'Année'}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                    {/* ── Header ── */}
+                    <SectionTitle>Administration</SectionTitle>
 
-                        {/* Chart Container */}
-                        <div className="bg-white p-2 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
-                            <RevenueChart data={getCurrentRevenueData()} timeframe={timeframe} />
-                        </div>
-                    </div>
-                )}
+                    {/* ── Revenue block ── */}
+                    {stats && (
+                        <div style={{ marginBottom: 52 }}>
 
-                {/* Dashboard Cards - "Sections à choisir" */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {cards.map((card) => (
-                        <Link
-                            key={card.href}
-                            href={card.href}
-                            className="bg-white group rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-gold-primary/30 flex flex-col items-center text-center relative overflow-hidden"
-                        >
-                            <div className="w-16 h-16 rounded-full bg-gray-50 group-hover:bg-gold-light/10 flex items-center justify-center text-3xl mb-6 transition-colors duration-300">
-                                {card.icon}
-                            </div>
-
-                            <h2 className="text-xl font-heading mb-2 text-deep-black group-hover:text-gold-primary transition-colors">
-                                {card.title}
-                            </h2>
-
-                            <p className="text-sm text-gray-elegant mb-6 line-clamp-2 min-h-[2.5em]">
-                                {card.desc}
-                            </p>
-
-                            {loading ? (
-                                <div className="skeleton h-8 w-16 mx-auto rounded-md" />
-                            ) : (
-                                <div className="mt-auto flex flex-col items-center gap-2">
-                                    <p className="text-3xl font-heading font-light text-deep-black">
-                                        {card.count ?? 0}
+                            {/* Top row: total + timeframe */}
+                            <div style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 20,
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: 20,
+                            }}>
+                                {/* Revenue card */}
+                                <Card style={{ padding: '28px 40px', minWidth: 260, flex: '1 1 260px' }}>
+                                    <p style={{
+                                        margin: '0 0 10px',
+                                        fontSize: 11, letterSpacing: '0.28em', color: TEXT_MUTED,
+                                        fontFamily: "'Montserrat',sans-serif", fontWeight: 600,
+                                    }}>
+                                        REVENU TOTAL
                                     </p>
-                                    <span className="text-[10px] uppercase tracking-widest font-bold text-gold-primary opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                                        Ouvrir →
-                                    </span>
-                                </div>
-                            )}
-                        </Link>
-                    ))}
-                </div>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: 'clamp(28px,3.5vw,42px)',
+                                        fontWeight: 700,
+                                        color: '#22863a',
+                                        fontFamily: "'Cormorant Garamond',Georgia,serif",
+                                        letterSpacing: '0.03em',
+                                    }}>
+                                        {formatPrice(stats.totalRevenue)}
+                                    </p>
+                                </Card>
 
-                <div className="mt-20 text-center pb-10">
-                    <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-primary transition-colors text-sm uppercase tracking-widest font-semibold group">
-                        <span className="group-hover:-translate-x-1 transition-transform">←</span> Retour au site
-                    </Link>
+                                {/* Timeframe switcher */}
+                                <div style={{
+                                    display: 'flex',
+                                    background: CARD_BG,
+                                    border: `1px solid ${GOLD_BORDER}`,
+                                    borderRadius: 12,
+                                    padding: 5,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                                    gap: 4,
+                                }}>
+                                    {(['day', 'month', 'year'] as const).map(t => {
+                                        const active = timeframe === t;
+                                        return (
+                                            <button key={t} onClick={() => setTimeframe(t)} style={{
+                                                padding: '10px 22px',
+                                                borderRadius: 8, border: 'none', cursor: 'pointer',
+                                                fontSize: 12, fontWeight: 600,
+                                                letterSpacing: '0.12em',
+                                                fontFamily: "'Montserrat',sans-serif",
+                                                background: active
+                                                    ? `linear-gradient(135deg,${GOLD_BRIGHT},${GOLD})`
+                                                    : 'transparent',
+                                                color: active ? '#fff' : TEXT_MUTED,
+                                                boxShadow: active ? `0 2px 12px rgba(184,144,42,0.28)` : 'none',
+                                                transition: 'all 0.2s',
+                                            }}>
+                                                {t === 'day' ? 'JOUR' : t === 'month' ? 'MOIS' : 'ANNÉE'}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Chart */}
+                            <Card style={{ padding: '8px 8px 0' }}>
+                                <RevenueChart data={getCurrentRevenueData()} timeframe={timeframe} />
+                            </Card>
+                        </div>
+                    )}
+
+                    {/* ── Stat cards ── */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                        gap: 20,
+                        marginBottom: 52,
+                    }}>
+                        {cards.map(card => (
+                            <Link key={card.href} href={card.href} style={{ textDecoration: 'none' }}>
+                                <Card hoverable style={{ padding: '32px 28px', textAlign: 'center', cursor: 'pointer' }}>
+                                    {/* Icon */}
+                                    <div style={{
+                                        width: 64, height: 64,
+                                        borderRadius: '50%',
+                                        background: GOLD_LIGHT,
+                                        border: `1px solid ${GOLD_BORDER}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontSize: 28, margin: '0 auto 20px',
+                                    }}>
+                                        {card.icon}
+                                    </div>
+
+                                    {/* Title */}
+                                    <h2 style={{
+                                        margin: '0 0 8px',
+                                        fontSize: 11, letterSpacing: '0.28em',
+                                        color: GOLD, fontFamily: "'Montserrat',sans-serif",
+                                        fontWeight: 600,
+                                    }}>
+                                        {card.title.toUpperCase()}
+                                    </h2>
+
+                                    {/* Desc */}
+                                    <p style={{
+                                        margin: '0 0 20px',
+                                        fontSize: 13, color: TEXT_MUTED,
+                                        fontFamily: "'Montserrat',sans-serif",
+                                        fontWeight: 300, lineHeight: 1.6,
+                                    }}>
+                                        {card.desc}
+                                    </p>
+
+                                    {/* Count */}
+                                    <div style={{
+                                        borderTop: `1px solid ${GOLD_BORDER}`,
+                                        paddingTop: 18, marginTop: 4,
+                                    }}>
+                                        {loading ? <Skeleton /> : (
+                                            <p style={{
+                                                margin: 0,
+                                                fontSize: 38, fontWeight: 700,
+                                                color: TEXT_MAIN,
+                                                fontFamily: "'Cormorant Garamond',Georgia,serif",
+                                                letterSpacing: '0.04em',
+                                                lineHeight: 1,
+                                            }}>
+                                                {card.count ?? 0}
+                                            </p>
+                                        )}
+                                        <p style={{
+                                            margin: '8px 0 0',
+                                            fontSize: 10, letterSpacing: '0.22em',
+                                            color: GOLD, fontFamily: "'Montserrat',sans-serif",
+                                            fontWeight: 600,
+                                        }}>
+                                            OUVRIR →
+                                        </p>
+                                    </div>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* ── Back link ── */}
+                    <div style={{ textAlign: 'center' }}>
+                        <Link href="/" style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 8,
+                            fontSize: 11, letterSpacing: '0.22em',
+                            color: TEXT_MUTED,
+                            fontFamily: "'Montserrat',sans-serif",
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            transition: 'color 0.2s',
+                        }}
+                            onMouseEnter={e => (e.currentTarget.style.color = GOLD)}
+                            onMouseLeave={e => (e.currentTarget.style.color = TEXT_MUTED)}
+                        >
+                            ← RETOUR AU SITE
+                        </Link>
+                    </div>
+
                 </div>
             </div>
-        </div>
+        </>
     );
 }
