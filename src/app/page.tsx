@@ -38,7 +38,7 @@ export default async function Home() {
   const featuredProducts = products.slice(0, 4);
 
   return (
-    <div className="bg-white">
+    <>
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
         <InteractiveBackground />
@@ -228,6 +228,6 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-    </div>
+    </>
   );
 }

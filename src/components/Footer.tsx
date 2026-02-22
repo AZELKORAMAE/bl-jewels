@@ -1,137 +1,239 @@
-import Link from 'next/link';
+'use client';
 
+import { useState } from 'react';
+
+const GOLD = '#C9A84C';
+
+/* ── SVG Icons ─────────────────────────────────────────────────────────── */
+const InstagramIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5" style={{ width: 20, height: 20 }}>
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+);
+
+const TiktokIcon = () => (
+    <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 20, height: 20 }}>
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5
+            2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01
+            a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34
+            6.34 6.34 0 0 0 6.33-6.34V8.87a8.18 8.18 0 0 0 4.78 1.52V6.95a4.85 4.85 0 0 1-1.01-.26z" />
+    </svg>
+);
+
+const WhatsappIcon = () => (
+    <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 20, height: 20 }}>
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15
+            -.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475
+            -.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52
+            .149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207
+            -.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372
+            -.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2
+            5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719
+            2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004
+            a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0
+            1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825
+            9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815
+            0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305
+            -1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821
+            11.821 0 0 0-3.48-8.413z" />
+    </svg>
+);
+
+/* ── Social button with hover state ────────────────────────────────────── */
+function SocialButton({ href, label, children }: {
+    href: string; label: string; children: React.ReactNode;
+}) {
+    const [hov, setHov] = useState(false);
+    return (
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            onMouseEnter={() => setHov(true)}
+            onMouseLeave={() => setHov(false)}
+            style={{
+                width: 52, height: 52, borderRadius: '50%',
+                border: `1px solid ${hov ? GOLD : 'rgba(201,168,76,0.30)'}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: hov ? GOLD : 'rgba(255,255,255,0.65)',
+                background: hov ? 'rgba(201,168,76,0.07)' : 'transparent',
+                transition: 'all 0.3s ease',
+                textDecoration: 'none',
+                flexShrink: 0,
+            }}
+        >
+            {children}
+        </a>
+    );
+}
+
+/* ── Shared styles ──────────────────────────────────────────────────────── */
+const label: React.CSSProperties = {
+    letterSpacing: '0.32em',
+    fontSize: 11,
+    color: GOLD,
+    fontFamily: "'Montserrat','Helvetica Neue',sans-serif",
+    fontWeight: 500,
+    marginBottom: 14,
+    marginTop: 0,
+};
+
+const divider: React.CSSProperties = {
+    width: 36, height: 1,
+    background: `linear-gradient(90deg,transparent,${GOLD},transparent)`,
+    margin: '0 auto 22px',
+};
+
+const body: React.CSSProperties = {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.72)',
+    lineHeight: 1.9,
+    margin: '3px 0',
+    fontFamily: "'Montserrat','Helvetica Neue',sans-serif",
+    fontWeight: 300,
+    letterSpacing: '0.04em',
+};
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
 export default function Footer() {
     return (
-        <footer className="bg-gradient-to-b from-[#f8f6f2] to-[#f1eee8] text-[#1a1a1a] pt-48 pb-28 border-t border-[#e5e2dc]">
+        <footer style={{
+            background: '#080601',
+            color: '#fff',
+            borderTop: `1px solid rgba(201,168,76,0.12)`,
+        }}>
 
-            <div className="container mx-auto px-8 lg:px-24">
+            {/* Brand header */}
+            <div style={{
+                textAlign: 'center',
+                padding: '52px 24px 44px',
+                borderBottom: `1px solid rgba(201,168,76,0.10)`,
+            }}>
+                <p style={{ ...label, marginBottom: 18 }}>MAISON DE HAUTE JOAILLERIE</p>
+                <h2 style={{
+                    margin: 0,
+                    fontSize: 'clamp(40px, 6.5vw, 68px)',
+                    fontWeight: 700,
+                    letterSpacing: '0.14em',
+                    color: '#ffffff',
+                    fontFamily: "'Cormorant Garamond','Playfair Display',Georgia,serif",
+                    lineHeight: 1,
+                }}>
+                    BL JEWELS
+                </h2>
+            </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-24 pb-32">
+            {/* Three columns */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+                gap: '48px 40px',
+                maxWidth: 1080,
+                margin: '0 auto',
+                padding: '56px 32px 48px',
+            }}>
 
-                    {/* Brand */}
-                    <div className="pr-8 border-r border-[#e5e2dc]">
+                {/* BOUTIQUE */}
+                <div style={{ textAlign: 'center' }}>
+                    <p style={label}>BOUTIQUE</p>
+                    <div style={divider} />
+                    <p style={body}>N168 Centre Commercial El Manjra</p>
+                    <p style={body}>Boulevard El Fida, Casablanca</p>
+                    <p style={{ ...body, marginTop: 18 }}>11:00 — 18:30</p>
+                    <p style={{ ...body, color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>
+                        Vendredi fermé
+                    </p>
+                    <a
+                        href="tel:+212655777934"
+                        style={{
+                            display: 'inline-block',
+                            marginTop: 20,
+                            color: GOLD,
+                            fontSize: 16,
+                            letterSpacing: '0.08em',
+                            textDecoration: 'none',
+                            fontFamily: "'Montserrat',sans-serif",
+                            fontWeight: 500,
+                        }}
+                    >
+                        +212 655 777 934
+                    </a>
+                </div>
 
-                        <h4 className="text-[13px] uppercase tracking-[0.6em] text-[#111] mb-14 font-light">
-                            BIJOUTERIE LUXE
-                        </h4>
-
-                        <div className="space-y-10">
-
-                            <p className="text-2xl font-light tracking-wide text-[#111]">
-                                Vente Bijoux en Or 18k
-                            </p>
-
-                            <div className="space-y-6 text-[15px] leading-relaxed text-gray-700">
-
-                                <p>
-                                    N168 Centre Commercial El Manjra<br />
-                                    Boulevard El Fida, Casablanca
-                                </p>
-
-                                <p>
-                                    11:00 — 18:30<br />
-                                    Vendredi fermé
-                                </p>
-
-                                <a
-                                    href="tel:+212655777934"
-                                    className="inline-block text-lg tracking-wide border-b border-transparent hover:border-black transition-all duration-500"
-                                >
-                                    +212 655 777 934
-                                </a>
-
-                                <p className="pt-6 text-sm text-gray-400 tracking-wide">
-                                    Owner @ayoubbelhadj1
-                                </p>
-                            </div>
-                        </div>
+                {/* LOCALISATION */}
+                <div style={{ textAlign: 'center' }}>
+                    <p style={label}>LOCALISATION</p>
+                    <div style={divider} />
+                    <div style={{
+                        borderRadius: 8,
+                        overflow: 'hidden',
+                        border: `1px solid rgba(201,168,76,0.18)`,
+                        height: 210,
+                    }}>
+                        <iframe
+                            title="BL Jewels Store"
+                            width="100%" height="100%"
+                            style={{ border: 0, display: 'block' }}
+                            loading="lazy"
+                            allowFullScreen
+                            referrerPolicy="no-referrer-when-downgrade"
+                            src="https://maps.google.com/maps?q=Centre+Commercial+El+Manjra+Casablanca&output=embed"
+                        />
                     </div>
+                </div>
 
-                    {/* Localisation */}
-                    <div className="px-8 border-r border-[#e5e2dc]">
-
-                        <h4 className="text-[13px] uppercase tracking-[0.6em] text-[#111] mb-14 font-light">
-                            LOCALISATION
-                        </h4>
-
-                        <div className="w-full h-[340px] rounded-xl overflow-hidden shadow-xl border border-[#e5e2dc]">
-
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.4100126708563!2d-7.608247319283162!3d33.56870217439333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cd5541d2c427%3A0xdc54dd3279ee4e93!2sBL%20Jewels%20Store!5e0!3m2!1sfr!2sma!4v1771702640886!5m2!1sfr!2sma"
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0 }}
-                                allowFullScreen
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                                title="BL Jewels Store"
-                                className="contrast-110 saturate-90"
-                            />
-                        </div>
-
+                {/* SUIVEZ-NOUS */}
+                <div style={{ textAlign: 'center' }}>
+                    <p style={label}>SUIVEZ-NOUS</p>
+                    <div style={divider} />
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: 16,
+                        marginBottom: 28,
+                    }}>
+                        <SocialButton href="https://instagram.com" label="Instagram">
+                            <InstagramIcon />
+                        </SocialButton>
+                        <SocialButton href="https://tiktok.com" label="TikTok">
+                            <TiktokIcon />
+                        </SocialButton>
+                        <SocialButton href="https://wa.me/212655777934" label="WhatsApp">
+                            <WhatsappIcon />
+                        </SocialButton>
                     </div>
-
-                    {/* Social */}
-                    <div className="pl-8">
-
-                        <h4 className="text-[13px] uppercase tracking-[0.6em] text-[#111] mb-14 font-light">
-                            SUIVEZ-NOUS
-                        </h4>
-
-                        <div className="flex gap-12 mb-14">
-
-                            <a
-                                href="https://www.instagram.com/bl_jewels168/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group transition"
-                                aria-label="Instagram"
-                            >
-                                <svg
-                                    className="w-7 h-7 text-gray-500 group-hover:text-black transition duration-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={1.3}
-                                >
-                                    <rect x="2" y="2" width="20" height="20" rx="6" ry="6"></rect>
-                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                                </svg>
-                            </a>
-
-                            <a
-                                href="https://www.tiktok.com/@bl_jewels168"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group transition"
-                                aria-label="TikTok"
-                            >
-                                <svg
-                                    className="w-7 h-7 text-gray-500 group-hover:text-black transition duration-500"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.4-.4-.26-.77-.56-1.11-.88v7.34c.03 5.42-4.63 10.05-10.15 9.77-5.18-.26-9.35-5.06-8.91-10.22.37-4.38 4.02-7.85 8.4-7.85 1.15 0 2.29.24 3.32.7V7.12a5.55 5.55 0 0 0-3.32-.98c-3.07 0-5.56 2.49-5.56 5.56 0 3.07 2.49 5.56 5.56 5.56 3.06 0 5.56-2.49 5.56-5.56V0h-.44z" />
-                                </svg>
-                            </a>
-
-                        </div>
-
-                        <p className="text-[11px] uppercase tracking-[0.6em] text-gray-400">
-                            Excellence depuis 2026
-                        </p>
-
-                    </div>
-
+                    <p style={{
+                        letterSpacing: '0.28em',
+                        fontSize: 10,
+                        color: 'rgba(255,255,255,0.30)',
+                        fontFamily: "'Montserrat',sans-serif",
+                        margin: 0,
+                    }}>
+                        EXCELLENCE DEPUIS 2021
+                    </p>
                 </div>
             </div>
 
-            {/* Bottom Red Luxury Bar */}
-            <div className="bg-[#9e1b22] text-white py-12 text-center tracking-[0.4em] text-[11px] uppercase font-light">
-                © {new Date().getFullYear()} BL JEWELS
+            {/* Bottom bar */}
+            <div style={{
+                borderTop: `1px solid rgba(201,168,76,0.08)`,
+                padding: '16px 32px',
+                textAlign: 'center',
+            }}>
+                <p style={{
+                    fontSize: 10,
+                    letterSpacing: '0.22em',
+                    color: 'rgba(255,255,255,0.25)',
+                    fontFamily: "'Montserrat',sans-serif",
+                    margin: 0,
+                }}>
+                    © 2026 BL JEWELS — TOUS DROITS RÉSERVÉS ✦ @AYOUBBELHADJ1
+                </p>
             </div>
-
         </footer>
     );
 }

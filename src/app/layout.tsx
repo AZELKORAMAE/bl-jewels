@@ -5,8 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Bijouterie Luxe - Collections Exclusives",
-  description: "Découvrez nos collections exclusives de bijoux de luxe",
+  title: "BL JEWElS - Joaillerie de Luxe",
+  description: "Découvrez l'excellence de BL JEWElS, notre collection exclusive de bijoux de luxe en or 18k.",
 };
 
 export default function RootLayout({

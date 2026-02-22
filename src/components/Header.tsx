@@ -29,9 +29,19 @@ export default function Header() {
                     {/* Logo */}
                     <Link
                         href="/"
-                        className="text-xl md:text-2xl font-heading font-semibold tracking-widest hover:text-gold-primary transition-colors"
+                        className="flex items-center gap-3 group"
                     >
-                        <span className="text-gold-primary">✦</span> BL JEWEELS
+                        <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden rounded-full border border-gold-primary/20 shadow-sm transition-transform duration-500 group-hover:scale-110">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/logo.png"
+                                alt="BL Jewels Logo"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <span className="text-xl md:text-2xl font-heading font-semibold tracking-widest hover:text-gold-primary transition-colors">
+                            BL JEWElS
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}

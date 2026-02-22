@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function InteractiveBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,8 +10,16 @@ export default function InteractiveBackground() {
         tx: 0.5, ty: 0.5,   // target mouse
     });
 
+    const [isMounted, setIsMounted] = useState(false);
+
     useEffect(() => {
-        const canvas = canvasRef.current!;
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted || !canvasRef.current) return;
+
+        const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d')!;
 
         /* ── resize ──────────────────────────────────────────────────────── */
@@ -81,7 +89,7 @@ export default function InteractiveBackground() {
                  *  0.80 – 0.92  bright gold highlight
                  *  0.92 – 1.00  white-gold specular
                  */
-                let r = 0, g = 0, b = 0, alpha = 1;
+                let r = 0, g = 0, b = 0; // alpha = 1; Removed unused alpha
 
                 if (hn < 0.42) {
                     // Deep black shadow
@@ -184,7 +192,9 @@ export default function InteractiveBackground() {
             window.removeEventListener('touchmove', onTouch);
             cancelAnimationFrame(frameRef.current);
         };
-    }, []);
+    }, [isMounted]);
+
+    if (!isMounted) return null;
 
     return (
         <div className="absolute inset-0 z-0" style={{ background: '#060402' }}>
