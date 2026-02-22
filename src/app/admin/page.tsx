@@ -108,8 +108,7 @@ export default function AdminPage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const formatPrice = (p: number) =>
-        new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
+    const formatPrice = (p: number) => `${p.toLocaleString('fr-FR')} DH`;
 
     const getCurrentRevenueData = () => {
         if (!stats) return [];

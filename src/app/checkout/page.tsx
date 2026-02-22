@@ -94,8 +94,7 @@ export default function CheckoutPage() {
     const [formData, setFormData] = useState({ customerName: '', customerPhone: '', customerAddress: '' });
     const set = (k: keyof typeof formData) => (v: string) => setFormData(p => ({ ...p, [k]: v }));
 
-    const formatPrice = (p: number) =>
-        new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
+    const formatPrice = (p: number) => `${p.toLocaleString('fr-FR')} DH`;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); setLoading(true);

@@ -18,11 +18,7 @@ export default function RevenueChart({ data, timeframe }: RevenueChartProps) {
     }, [data]);
 
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('fr-MA', {
-            style: 'currency',
-            currency: 'MAD',
-            maximumFractionDigits: 0,
-        }).format(price);
+        return `${price.toLocaleString('fr-FR')} DH`;
     };
 
     const formatDate = (dateStr: string) => {

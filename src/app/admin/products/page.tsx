@@ -340,8 +340,7 @@ export default function AdminProductsPage() {
         } catch { alert('Erreur lors de la suppression'); }
     };
 
-    const fmtPrice = (p: number) =>
-        new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
+    const fmtPrice = (p: number) => `${p.toLocaleString('fr-FR')} DH`;
 
     return (
         <div style={{ minHeight: '100vh', background: PAGE_BG, paddingTop: 80, paddingBottom: 80 }}>

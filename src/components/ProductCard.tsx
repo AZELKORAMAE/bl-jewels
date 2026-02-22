@@ -19,10 +19,7 @@ export default function ProductCard({
     slug,
 }: ProductCardProps) {
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('fr-FR', {
-            style: 'currency',
-            currency: 'EUR',
-        }).format(price);
+        return `${price.toLocaleString('fr-FR')} DH`;
     };
 
     const isOutOfStock = quantity !== undefined && quantity === 0;

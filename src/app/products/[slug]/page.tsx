@@ -22,8 +22,7 @@ interface Product {
     price: number; quantity: number; images: string[]; slug: string;
 }
 
-const fmtPrice = (p: number) =>
-    new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
+const fmtPrice = (p: number) => `${p.toLocaleString('fr-FR')} DH`;
 
 /* ── Skeleton ────────────────────────────────────────────────────────── */
 function LoadingSkeleton() {

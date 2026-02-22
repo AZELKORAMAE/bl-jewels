@@ -200,8 +200,7 @@ function CartItemCard({ item, updateQuantity, removeFromCart, formatPrice }: {
 /* ── Main ─────────────────────────────────────────────────────────────── */
 export default function CartPage() {
     const { cart, removeFromCart, updateQuantity, getTotal } = useCart();
-    const formatPrice = (p: number) =>
-        new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(p);
+    const formatPrice = (p: number) => `${p.toLocaleString('fr-FR')} DH`;
 
     if (cart.length === 0) return <EmptyCart />;
 

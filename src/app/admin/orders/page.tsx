@@ -68,12 +68,7 @@ export default function AdminOrdersPage() {
         }
     };
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('fr-MA', {
-            style: 'currency',
-            currency: 'MAD',
-        }).format(price);
-    };
+    const formatPrice = (price: number) => `${price.toLocaleString('fr-FR')} DH`;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR', {
