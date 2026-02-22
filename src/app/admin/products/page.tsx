@@ -364,7 +364,7 @@ export default function AdminProductsPage() {
                         onClick={showForm ? handleCancel : () => setShowForm(true)}
                         disabled={collections.length === 0 && !showForm}
                         style={{
-                            padding: '12px 24px', borderRadius: 10, border: 'none', cursor: (collections.length === 0 && !showForm) ? 'not-allowed' : 'pointer',
+                            padding: '12px 24px', borderRadius: 10, cursor: (collections.length === 0 && !showForm) ? 'not-allowed' : 'pointer',
                             fontSize: 11, fontWeight: 700, letterSpacing: '0.20em',
                             fontFamily: "'Montserrat',sans-serif",
                             background: showForm ? 'transparent' : `linear-gradient(135deg,${GOLD_BRIGHT},${GOLD})`,
